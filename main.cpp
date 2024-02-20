@@ -1,4 +1,5 @@
 // main.cpp
+// Code Reference: https://www.geeksforgeeks.org/ml-neural-network-implementation-in-c-from-scratch/
 
 // don't forget to include out neural network
 #include <fstream> 
