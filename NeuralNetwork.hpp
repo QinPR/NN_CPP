@@ -20,7 +20,7 @@ public:
 	void propagateForward(RowVector& input);
 
 	// function for backward propagation of errors made by neurons
-	void propagateBackward(RowVector& output);
+	void propagateBackward(RowVector& output, bool update_now);
 
 	// function to calculate errors made by neurons in each layer
 	void calcErrors(RowVector& output);
@@ -29,7 +29,7 @@ public:
 	void updateWeights();
 
 	// function to train the neural network give an array of data points
-	void train(std::vector<RowVector*> input_data, std::vector<RowVector*> output_data);
+	void train(std::vector<RowVector*> input_data, std::vector<RowVector*> output_data, uint batch_size);
 
 	// storage objects for working of neural network
 	/*

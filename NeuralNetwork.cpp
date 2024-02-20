@@ -115,21 +115,29 @@ void NeuralNetwork::updateWeights()
 }
 
 
-void NeuralNetwork::propagateBackward(RowVector& ground_truth)
+void NeuralNetwork::propagateBackward(RowVector& ground_truth, bool update_now)
 {
 	calcErrors(ground_truth);
-	updateWeights();
+	if (update_now) {
+		updateWeights();
+	}
 }
 
 
-void NeuralNetwork::train(std::vector<RowVector*> input_data, std::vector<RowVector*> ground_truth)
+void NeuralNetwork::train(std::vector<RowVector*> input_data, std::vector<RowVector*> ground_truth, uint batch_size)
 {
+	bool update_now = false;
 	for (uint i = 1; i < input_data.size(); i++) {
-		std::cout << "Input to neural network is : " << *input_data[i] << std::endl;
+		if (i % batch_size == 0) {
+			update_now = true;
+		} else {
+			update_now = false;
+		}
+		// std::cout << "Input to neural network is : " << *input_data[i] << std::endl;
 		propagateForward(*input_data[i]);
-		std::cout << "Expected output is : " << *ground_truth[i] << std::endl;
-		std::cout << "Output produced is : " << *neuronLayers.back() << std::endl;
-		propagateBackward(*ground_truth[i]);
-		std::cout << "MSE : " << std::sqrt((*deltas.back()).dot((*deltas.back())) / deltas.back()->size()) << std::endl;
+		// std::cout << "Expected output is : " << *ground_truth[i] << std::endl;
+		// std::cout << "Output produced is : " << *neuronLayers.back() << std::endl;
+		propagateBackward(*ground_truth[i], update_now);
+		// std::cout << "MSE : " << std::sqrt((*deltas.back()).dot((*deltas.back())) / deltas.back()->size()) << std::endl;
 	}
 }

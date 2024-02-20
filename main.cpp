@@ -50,7 +50,7 @@ void genData(std::string filename, uint input_feat_len)
 {
 	std::ofstream file1(filename + "-in");
 	std::ofstream file2(filename + "-out");
-	for (uint r = 0; r < 1000; r++) {
+	for (uint r = 0; r < 100000; r++) {
 		// randomly generate samples with 12 input features
 		Scalar y = 10;
 		for (int i = 0; i < input_feat_len; i++) {
@@ -73,12 +73,14 @@ void genData(std::string filename, uint input_feat_len)
 typedef std::vector<RowVector*> data;
 int main()
 {
+	uint batch_size = 2;
 	NeuralNetwork neural_nerwork({ 12, 128, 64, 1 });   // init neural network with specific topology 
 	data dataset_X, dataset_Y;
 	genData("test", 12);
 
 	ReadCSV("test-in", dataset_X);
 	ReadCSV("test-out", dataset_Y);
-	neural_nerwork.train(dataset_X, dataset_Y);
+	std::cout << "Training starts" << std::endl;
+	neural_nerwork.train(dataset_X, dataset_Y, batch_size);
 	return 0;
 }
