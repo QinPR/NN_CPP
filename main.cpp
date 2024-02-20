@@ -65,7 +65,7 @@ void genData(std::string filename)
 typedef std::vector<RowVector*> data;
 int main()
 {
-	NeuralNetwork neural_nerwork({ 2, 64, 16, 1 });   // init neural network with specific topology 
+	NeuralNetwork neural_nerwork({ 2, 128, 64, 1 });   // init neural network with specific topology 
 	data dataset_X, dataset_Y;
 	genData("test");
 	ReadCSV("test-in", dataset_X);

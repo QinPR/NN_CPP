@@ -14,7 +14,7 @@ typedef Eigen::VectorXf ColVector;
 class NeuralNetwork {
 public:
 	// constructor
-	NeuralNetwork(std::vector<uint> topology, Scalar learningRate = Scalar(0.005));
+	NeuralNetwork(std::vector<uint> topology, Scalar learningRate = Scalar(0.0005));
 
 	// function for forward propagation of data
 	void propagateForward(RowVector& input);

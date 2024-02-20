@@ -124,7 +124,7 @@ void NeuralNetwork::propagateBackward(RowVector& ground_truth)
 
 void NeuralNetwork::train(std::vector<RowVector*> input_data, std::vector<RowVector*> ground_truth)
 {
-	for (uint i = 0; i < input_data.size(); i++) {
+	for (uint i = 1; i < input_data.size(); i++) {
 		std::cout << "Input to neural network is : " << *input_data[i] << std::endl;
 		propagateForward(*input_data[i]);
 		std::cout << "Expected output is : " << *ground_truth[i] << std::endl;
