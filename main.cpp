@@ -21,21 +21,21 @@ void ReadCSV(std::string filename, std::vector<RowVector*>& data)
 	std::stringstream ss(line);
 	std::vector<Scalar> parsed_vec;
 	while (getline(ss, word, ',')) {
-		parsed_vec.push_back(Scalar(std::stof(&word[0])));
+		parsed_vec.push_back(Scalar(std::stof(&word[0]))); 
 	}
 	uint cols = parsed_vec.size();
 	data.push_back(new RowVector(cols));
 	for (uint i = 0; i < cols; i++) {
-		data.back()->coeffRef(1, i) = parsed_vec[i];
+		data.back()->coeffRef(1, i) = parsed_vec[i];   // coeffRef: index the entry in RowVector
 	}
 
 	// read the file
 	if (file.is_open()) {
-		while (getline(file, line, '\n')) {
+		while (getline(file, line, '\n')) {    // get each sample (each sample is a line)
 			std::stringstream ss(line);
 			data.push_back(new RowVector(1, cols));
 			uint i = 0;
-			while (getline(ss, word, ',')) {
+			while (getline(ss, word, ',')) {	// get features in this sample 
 				data.back()->coeffRef(i) = Scalar(std::stof(&word[0]));
 				i++;
 			}
@@ -50,10 +50,12 @@ void genData(std::string filename)
 	std::ofstream file1(filename + "-in");
 	std::ofstream file2(filename + "-out");
 	for (uint r = 0; r < 1000; r++) {
-		Scalar x = rand() / Scalar(RAND_MAX);
-		Scalar y = rand() / Scalar(RAND_MAX);
-		file1 << x << "," << y << std::endl;
-		file2 << 2 * x + 10 + y << std::endl;
+		// randomly generate samples with 2 input features
+		Scalar x1 = rand() / Scalar(RAND_MAX);
+		Scalar x2 = rand() / Scalar(RAND_MAX);
+		file1 << x1 << "," << x2 << std::endl;
+		// suppose the ground truth distribution is y =  2 * x1 + 10 + x2
+		file2 << 2 * x1 + 10 + x2 << std::endl;
 	}
 	file1.close();
 	file2.close();
@@ -63,11 +65,11 @@ void genData(std::string filename)
 typedef std::vector<RowVector*> data;
 int main()
 {
-	NeuralNetwork n({ 2, 3, 1 });
-	data in_dat, out_dat;
+	NeuralNetwork neural_nerwork({ 2, 64, 16, 1 });   // init neural network with specific topology 
+	data dataset_X, dataset_Y;
 	genData("test");
-	ReadCSV("test-in", in_dat);
-	ReadCSV("test-out", out_dat);
-	n.train(in_dat, out_dat);
+	ReadCSV("test-in", dataset_X);
+	ReadCSV("test-out", dataset_Y);
+	neural_nerwork.train(dataset_X, dataset_Y);
 	return 0;
 }

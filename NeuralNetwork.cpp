@@ -8,13 +8,13 @@ NeuralNetwork::NeuralNetwork(std::vector<uint> topology, Scalar learningRate)
 	for (uint i = 0; i < topology.size(); i++) {
 		// initialize neuron layers
 		if (i == topology.size() - 1)
-			neuronLayers.push_back(new RowVector(topology[i]));
+			neuronLayers.push_back(new RowVector(topology[i]));    // the last layer doesn't have a bias term
 		else
 			neuronLayers.push_back(new RowVector(topology[i] + 1));
 
 		// initialize cache and delta vectors
 		cacheLayers.push_back(new RowVector(neuronLayers.size()));
-		deltas.push_back(new RowVector(neuronLayers.size()));
+		deltas.push_back(new RowVector(neuronLayers.size()));    // for backward propagation
 
 		// vector.back() gives the handle to recently added element
 		// coeffRef gives the reference of value at that place 
@@ -65,16 +65,21 @@ void NeuralNetwork::propagateForward(RowVector& input)
 	// unaryExpr applies the given function to all elements of CURRENT_LAYER
 	for (uint i = 1; i < topology.size(); i++) {
 		// already explained above
-		(*neuronLayers[i]) = (*neuronLayers[i - 1]) * (*weights[i - 1]);
-		neuronLayers[i]->block(0, 0, 1, topology[i]).unaryExpr(std::ptr_fun(activationFunction));
+		(*neuronLayers[i]) = (*neuronLayers[i - 1]) * (*weights[i - 1]);                      // calculating <w, x>
+		neuronLayers[i]->block(0, 0, 1, topology[i]).unaryExpr(std::ptr_fun(activationFunction));   // apply the activation fucntion
 	}
 }
 
 
-void NeuralNetwork::calcErrors(RowVector& output)
+/*
+	Calculate the error of every layer
+	Arg:
+		@ground_truth: the ground truth of input sample. 
+*/
+void NeuralNetwork::calcErrors(RowVector& ground_truth)
 {
 	// calculate the errors made by neurons of last layer
-	(*deltas.back()) = output - (*neuronLayers.back());
+	(*deltas.back()) = ground_truth - (*neuronLayers.back());
 
 	// error calculation of hidden layers is different
 	// we will begin by the last hidden layer
@@ -110,21 +115,21 @@ void NeuralNetwork::updateWeights()
 }
 
 
-void NeuralNetwork::propagateBackward(RowVector& output)
+void NeuralNetwork::propagateBackward(RowVector& ground_truth)
 {
-	calcErrors(output);
+	calcErrors(ground_truth);
 	updateWeights();
 }
 
 
-void NeuralNetwork::train(std::vector<RowVector*> input_data, std::vector<RowVector*> output_data)
+void NeuralNetwork::train(std::vector<RowVector*> input_data, std::vector<RowVector*> ground_truth)
 {
 	for (uint i = 0; i < input_data.size(); i++) {
 		std::cout << "Input to neural network is : " << *input_data[i] << std::endl;
 		propagateForward(*input_data[i]);
-		std::cout << "Expected output is : " << *output_data[i] << std::endl;
+		std::cout << "Expected output is : " << *ground_truth[i] << std::endl;
 		std::cout << "Output produced is : " << *neuronLayers.back() << std::endl;
-		propagateBackward(*output_data[i]);
+		propagateBackward(*ground_truth[i]);
 		std::cout << "MSE : " << std::sqrt((*deltas.back()).dot((*deltas.back())) / deltas.back()->size()) << std::endl;
 	}
 }
