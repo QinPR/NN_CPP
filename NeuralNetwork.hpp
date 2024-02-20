@@ -29,7 +29,7 @@ public:
 	void updateWeights();
 
 	// function to train the neural network give an array of data points
-	void train(std::vector<RowVector*> data);
+	void train(std::vector<RowVector*> input_data, std::vector<RowVector*> output_data);
 
 	// storage objects for working of neural network
 	/*
@@ -42,5 +42,6 @@ public:
 	std::vector<RowVector*> cacheLayers; // stores the unactivated (activation fn not yet applied) values of layers
 	std::vector<RowVector*> deltas; // stores the error contribution of each neurons
 	std::vector<Matrix*> weights; // the connection weights itself
+	std::vector<uint> topology;
 	Scalar learningRate;
 };

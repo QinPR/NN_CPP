@@ -41,6 +41,18 @@ NeuralNetwork::NeuralNetwork(std::vector<uint> topology, Scalar learningRate)
 };
 
 
+Scalar activationFunction(Scalar x)
+{
+	return tanhf(x);
+}
+
+
+Scalar activationFunctionDerivative(Scalar x)
+{
+	return 1 - tanhf(x) * tanhf(x);
+}
+
+
 void NeuralNetwork::propagateForward(RowVector& input)
 {
 	// set the input to input layer
@@ -102,17 +114,6 @@ void NeuralNetwork::propagateBackward(RowVector& output)
 {
 	calcErrors(output);
 	updateWeights();
-}
-
-
-Scalar activationFunction(Scalar x)
-{
-	return tanhf(x);
-}
-
-Scalar activationFunctionDerivative(Scalar x)
-{
-	return 1 - tanhf(x) * tanhf(x);
 }
 
 
